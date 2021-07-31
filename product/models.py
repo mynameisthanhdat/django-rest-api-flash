@@ -5,7 +5,7 @@ from django.db import models
 class Product(models.Model) :
     name = models.CharField(max_length=100)
     brand = models.CharField(max_length=100)
-    info = models.EmailField(max_length=10000)
+    info = models.CharField(max_length=10000)
     price = models.IntegerField()
     # date = models.DateTimeField(auto_now_add=True)
 
