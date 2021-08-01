@@ -8,6 +8,10 @@ from .permissions import IsOwnerOrReadOnly
 from rest_framework import permissions
 from rest_framework import mixins
 from rest_framework import generics
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework.reverse import reverse
+from rest_framework import renderers
 
 class ProductList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
     queryset = Product.objects.all()
@@ -50,3 +54,18 @@ class UserList(generics.ListAPIView):
 class UserDetail(generics.RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+@api_view(['GET'])
+def api_root(request, format=None):
+    return Response({
+        'user': reverse('user-list', request=request, format=format),
+        'product': reverse('product-list', request=request, format=format)
+    })
+
+class ProductHighlight(generics.GenericAPIView):
+    queryset = Product.objects.all()
+    renderer_classes = [renderers.StaticHTMLRenderer]
+
+    def get(self, request, *args, **kwargs):
+        product = self.get_object()
+        return Response(product.highlighted)
